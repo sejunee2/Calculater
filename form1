@@ -1,0 +1,130 @@
+using System.Xml.Linq;
+
+namespace WinFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        private string flag,m;
+        
+        /// <summary>
+        /// 1:+ 2:- 3:* 4:/ 5:%
+        /// </summary>
+        private double x,y;
+        private bool e_check;
+        public Form1()
+        {
+            
+            InitializeComponent();
+        }
+        
+        //숫자 패드
+        private void Num_Click(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            if (e_check == true) {
+                ClearTextBox();
+                e_check = false;
+            }
+            textBox1.Text += button.Text;            
+        }
+        private void Dot_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text.Contains('.'))
+                return;
+            else
+            {
+                textBox1.Text += ".";
+            }
+        }
+        //연산자패드
+        private void Calc(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            e_check = false;
+            if (textBox1.Text.Length == 0) { return; }
+            x = Double.Parse(textBox1.Text);
+            textBox2.Text = x + button.Text;
+            textBox1.Clear();
+            flag = button.Text;
+            textBox1.Text = "";
+        }
+        private void Equal(object sender, EventArgs e)
+        {
+            try
+            {
+                y = Double.Parse(textBox1.Text);
+            } catch { 
+                MessageBox.Show("Error");
+                ClearTextBox();
+                return;
+            }
+            if (textBox2.Text.Contains('=')) { return; }
+            
+            textBox2.Text += y;
+            textBox2.Text += "=";
+            Result();
+            m += textBox2.Text + textBox1.Text + "\n";
+            e_check = true;
+        }
+        private void Clear(object sender, EventArgs e)
+        {
+            ClearTextBox();
+        }
+        private void ClearTextBox()
+        {
+            textBox1.Clear();
+            textBox2.Clear();
+        }
+        private void Result()
+        {
+            switch (flag)
+            {
+                case "+":
+                    textBox1.Text = (x + y).ToString();
+                    break;
+                case "-":
+                    textBox1.Text = (x - y).ToString();
+                    break;
+                case "*":
+                    textBox1.Text = (x * y).ToString();
+                    break;
+                case "/":
+                    textBox1.Text = (x / y).ToString();
+                    break;
+                case "%":
+                    textBox1.Text = (x % y).ToString();
+                    break;
+            }
+        }
+        private void Delete(object sender, EventArgs e)
+        {
+            if (textBox1.Text.Length != 0)
+            {
+                textBox1.Text = textBox1.Text.Remove(textBox1.Text.Length - 1);
+            }
+            else return;
+            
+        }
+        private void Else(object sender, EventArgs e)
+        {
+            return;
+        }
+        private void Memo(object sender, EventArgs e)
+        {
+            MessageBox.Show(m);
+        }
+        private void Memo1(object sender, EventArgs e)
+        {
+            //Form1 Control Disalbe 하고 Form2를 띄우면 됨
+            this.Enabled = false;
+            Form2 form2 = new(this,m);
+            form2.ShowDialog();
+            if (form2.ShowDialog() == DialogResult.OK)
+            {
+                this.Enabled = true;
+            }
+            
+        }
+       
+    }
+}
